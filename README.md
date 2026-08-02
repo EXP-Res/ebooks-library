@@ -33,7 +33,7 @@ npm install
 npm run dev
 ```
 
-开发服务器会直接从现有根级分类目录读取书籍，不会移动或复制原文件。
+开发服务器会直接从 `ebooks/` 读取书籍，不会移动或复制原文件。
 
 ## 构建
 
@@ -78,12 +78,13 @@ pnpm build
 
 ## 添加和整理书籍
 
-项目优先扫描标准的 `books/` 目录；为了兼容本仓库，若 `books/` 不存在，也会把根目录下非应用文件夹视作一级分类。
+项目只扫描仓库根目录下的 `ebooks/`，避免把应用代码或工具目录误当成书库分类。
 
 ```text
-科幻/
-└── 银河帝国/
-    └── 基地.epub
+ebooks/
+└── 科幻/
+    └── 银河帝国/
+        └── 基地.epub
 ```
 
 支持 `.pdf`、`.epub`、`.txt`、`.md`、`.markdown`。新增、删除或移动文件后，运行 `pnpm generate:catalog`；开发和构建命令也会自动执行扫描。
@@ -166,6 +167,7 @@ GitHub 官方说明：已发布的 Pages 站点最大为 1 GB，软带宽限制�
 
 ```text
 scripts/                 目录生成与构建资源复制
+ebooks/                  原始电子书与分类目录
 pages-exclude.json       Pages 构建排除规则
 public/catalog.json      自动生成的书目
 src/components/          通用界面组件

@@ -23,13 +23,14 @@ jobs:
         with:
           lfs: true
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: 24
-
-      - name: Enable pnpm
-        run: corepack enable
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,6 +52,14 @@ jobs:
           ACCESS_PASSWORD: ${{ secrets.ACCESS_PASSWORD }}
           ACCESS_PASSWORD_HASH: ${{ secrets.ACCESS_PASSWORD_HASH }}
           ACCESS_SESSION_HOURS: ${{ vars.ACCESS_SESSION_HOURS || '168' }}
+
+      - name: Validate Pages artifact
+        shell: bash
+        run: |
+          if grep -q '/src/main.tsx' dist/index.html; then
+            echo 'dist/index.html still references Vite source files.' >&2
+            exit 1
+          fi
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

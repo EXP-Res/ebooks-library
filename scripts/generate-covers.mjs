@@ -12,7 +12,7 @@ globalThis.ImageData ??= ImageData;
 globalThis.Path2D ??= Path2D;
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const conventionalRoot = path.join(repositoryRoot, 'books');
+const ebookRoot = path.join(repositoryRoot, 'ebooks');
 const outputRoot = path.join(repositoryRoot, 'public', 'generated-covers');
 
 async function exists(file) {
@@ -83,7 +83,6 @@ async function pdfCover(file) {
 const pagesMode = process.argv.includes('--pages');
 const exclude = pagesMode ? await loadPagesExclude(repositoryRoot) : [];
 const catalog = await generateCatalog(repositoryRoot, { exclude });
-const useConventionalRoot = await stat(conventionalRoot).then((info) => info.isDirectory()).catch(() => false);
 let created = 0;
 let skipped = 0;
 let unavailable = 0;
@@ -93,7 +92,7 @@ for (const book of catalog) {
   if (book.cover || !['epub', 'pdf'].includes(book.format)) continue;
   const output = path.join(outputRoot, book.id.replace(/\.[^.]+$/, '.jpg'));
   if (await exists(output)) { skipped += 1; continue; }
-  const source = path.join(useConventionalRoot ? conventionalRoot : repositoryRoot, ...book.id.split('/'));
+  const source = path.join(ebookRoot, ...book.id.split('/'));
   try {
     const cover = book.format === 'epub' ? await epubCover(source) : await pdfCover(source);
     await mkdir(path.dirname(output), { recursive: true });

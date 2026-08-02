@@ -5,11 +5,10 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const supportedAsset = /\.(pdf|epub|txt|md|markdown|jpe?g|png|webp|gif|svg)$/i;
-const appDirectories = new Set(['src', 'public', 'scripts', 'node_modules', 'dist', '.git', '.github']);
-
 function localBooksPlugin(root: string): Plugin {
+  const ebookRoot = path.resolve(root, 'ebooks');
   return {
-    name: 'serve-root-books',
+    name: 'serve-local-ebooks',
     configureServer(server) {
       server.middlewares.use((request, response, next) => {
         const rawPath = request.url?.split('?')[0] ?? '';
@@ -18,9 +17,9 @@ function localBooksPlugin(root: string): Plugin {
         try {
           const relative = decodeURIComponent(rawPath.slice('/books/'.length));
           const segments = relative.split('/').filter(Boolean);
-          if (!segments.length || segments.some((segment) => segment === '..') || appDirectories.has(segments[0])) return next();
-          const file = path.resolve(root, ...segments);
-          if (!file.startsWith(`${root}${path.sep}`) || !supportedAsset.test(file) || !existsSync(file) || !statSync(file).isFile()) return next();
+          if (!segments.length || segments.some((segment) => segment === '..')) return next();
+          const file = path.resolve(ebookRoot, ...segments);
+          if (!file.startsWith(`${ebookRoot}${path.sep}`) || !supportedAsset.test(file) || !existsSync(file) || !statSync(file).isFile()) return next();
           createReadStream(file).pipe(response);
         } catch {
           next();

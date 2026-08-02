@@ -4,8 +4,6 @@ import { isExcluded } from './pages-exclude.mjs';
 
 export const BOOK_EXTENSIONS = new Set(['.pdf', '.epub', '.txt', '.md', '.markdown']);
 export const COVER_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
-export const APP_DIRECTORIES = new Set(['src', 'public', 'scripts', 'node_modules', 'dist', '.git', '.github', '.openai']);
-
 const toPosix = (value) => value.split(path.sep).join('/');
 
 async function readMetadata(filePath) {
@@ -71,17 +69,11 @@ async function walk(directory, root, entries) {
 }
 
 export async function findBookRoots(repositoryRoot) {
-  const conventional = path.join(repositoryRoot, 'books');
+  const conventional = path.join(repositoryRoot, 'ebooks');
   try {
     if ((await stat(conventional)).isDirectory()) return [{ source: conventional, prefix: '' }];
   } catch {}
-
-  const roots = [];
-  for (const child of await readdir(repositoryRoot, { withFileTypes: true })) {
-    if (!child.isDirectory() || child.name.startsWith('.') || APP_DIRECTORIES.has(child.name)) continue;
-    roots.push({ source: path.join(repositoryRoot, child.name), prefix: child.name });
-  }
-  return roots;
+  throw new Error(`未找到书库目录：${conventional}`);
 }
 
 export async function generateCatalog(repositoryRoot, options = {}) {
