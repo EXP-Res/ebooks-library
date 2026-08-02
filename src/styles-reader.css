@@ -1,0 +1,90 @@
+.reader-page { height: 100vh; overflow: hidden; background: var(--paper); }
+.reader-header { position: relative; z-index: 60; display: grid; height: 62px; grid-template-columns: 48px 1fr 48px; align-items: center; border-bottom: 1px solid var(--line); padding: 0 15px; background: var(--surface); }
+.reader-header > div { min-width: 0; text-align: center; }
+.reader-header b, .reader-header span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reader-header b { font: 18px "STKaiti", "KaiTi", serif; }
+.reader-header span { margin-top: 2px; color: var(--muted); font-size: 9px; }
+.reader-menu { position: absolute; z-index: 90; top: 55px; right: 15px; display: grid; min-width: 190px; border: 1px solid var(--line); border-radius: 9px; padding: 7px; background: var(--surface); box-shadow: var(--shadow); text-align: left !important; }
+.reader-menu a, .reader-menu button { display: flex; min-height: 40px; align-items: center; gap: 9px; border: 0; border-radius: 6px; padding: 7px 10px; background: transparent; color: var(--ink); font-size: 13px; cursor: pointer; }
+.reader-menu a:hover, .reader-menu button:hover { background: var(--paper); }
+.reader-menu svg { width: 17px; }
+.reader-subbar { display: flex; min-height: 50px; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); padding: 6px 16px; background: var(--surface); }
+.reader-subbar > button { min-height: 34px; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 6px; padding: 5px 11px; background: var(--surface); cursor: pointer; }
+.reader-subbar > button:hover { border-color: var(--amber); }
+.reader-subbar > button:disabled { opacity: .4; }
+.tool-divider { width: 1px; height: 22px; margin: 0 3px; background: var(--line); }
+.reader-search { display: flex; min-width: 220px; height: 35px; align-items: center; gap: 5px; margin-left: auto; border: 1px solid var(--line); border-radius: 7px; padding-left: 9px; background: var(--paper); }
+.reader-search svg { width: 16px; color: var(--muted); }
+.reader-search input { width: 125px; min-width: 50px; flex: 1; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 12px; }
+.reader-search span { min-width: 40px; color: var(--muted); font: 9px ui-monospace, monospace; text-align: center; }
+.reader-search button { height: 100%; border: 0; border-left: 1px solid var(--line); padding: 0 9px; background: transparent; cursor: pointer; }
+.reader-loading { display: grid; min-height: 300px; place-items: center; color: var(--muted); }
+.reader-failure { display: grid; min-height: 100vh; place-items: center; align-content: center; gap: 20px; padding: 30px; }
+.reader-failure > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.searching-overlay { position: absolute; z-index: 50; top: 70px; left: 50%; transform: translateX(-50%); border-radius: 20px; padding: 9px 16px; background: var(--navy); color: #fff; box-shadow: var(--shadow); font-size: 12px; }
+
+.pdf-reader, .epub-reader, .prose-reader { height: calc(100vh - 62px); }
+.pdf-tools label { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
+.pdf-tools label input { width: 50px; height: 32px; border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; background: var(--paper); color: var(--ink); text-align: center; }
+.pdf-tools > span:not(.tool-divider) { min-width: 42px; color: var(--muted); font-size: 11px; text-align: center; }
+.pdf-stage { position: relative; height: calc(100% - 50px); overflow: auto; padding: 22px; background: #cbd0d4; text-align: center; }
+:root[data-theme='dark'] .pdf-stage { background: #080d15; }
+.pdf-stage canvas { display: block; margin: 0 auto; background: white; box-shadow: 0 8px 30px rgba(0,0,0,.22); }
+
+.epub-workspace { position: relative; height: calc(100% - 50px); }
+.epub-viewport { position: absolute; inset: 0; }
+.epub-viewport.theme-paper { background: #f7f4ee; }
+.epub-viewport.theme-eye { background: #e8eddc; }
+.epub-viewport.theme-night { background: #121b2a; }
+.epub-toc { position: absolute; z-index: 42; top: 0; bottom: 0; left: 0; width: min(330px, 85vw); overflow-y: auto; transform: translateX(-102%); border-right: 1px solid var(--line); padding: 22px 12px; background: var(--surface); box-shadow: 20px 0 50px rgba(0,0,0,.18); transition: transform .2s ease; }
+.epub-toc.open { transform: translateX(0); }
+.epub-toc b { display: block; padding: 5px 10px 15px; font-family: "STKaiti", "KaiTi", serif; font-size: 20px; }
+.epub-toc button { display: block; width: 100%; border: 0; border-radius: 5px; padding-block: 8px; background: transparent; color: var(--muted); text-align: left; cursor: pointer; }
+.epub-toc button:hover { background: var(--paper); color: var(--ink); }
+.epub-scrim { position: absolute; z-index: 41; inset: 0; border: 0; background: rgba(8,14,24,.42); }
+
+.prose-reader { display: flex; flex-direction: column; }
+.prose-reader.theme-paper { background: #f7f4ee; color: #253144; }
+.prose-reader.theme-eye { background: #e8eddc; color: #26332b; }
+.prose-reader.theme-night { background: #121b2a; color: #d9e0e8; }
+.prose-scroll { height: calc(100% - 50px); overflow-y: auto; scroll-behavior: smooth; }
+.prose-scroll article { width: calc(100% - 48px); margin: 0 auto; padding: 58px 0 20vh; }
+.prose-scroll article.serif { font-family: "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif; }
+.prose-scroll article.sans { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+.plain-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+mark[data-reader-search] { border-radius: 2px; padding: 0 1px; background: #f5d36e; color: #1b2430; }
+mark[data-reader-search].current { outline: 2px solid #d26a32; }
+.markdown-layout { position: relative; flex-direction: row; }
+.markdown-main { min-width: 0; flex: 1; }
+.document-toc { width: 240px; overflow-y: auto; border-right: 1px solid color-mix(in srgb, currentColor 14%, transparent); padding: 24px 12px; }
+.document-toc b { display: block; padding: 0 8px 13px; font: 19px "STKaiti", "KaiTi", serif; }
+.document-toc button { display: block; width: 100%; overflow: hidden; border: 0; border-radius: 5px; padding-block: 7px; background: transparent; color: inherit; opacity: .65; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.document-toc button:hover { background: color-mix(in srgb, currentColor 7%, transparent); opacity: 1; }
+.markdown-body { overflow-wrap: anywhere; }
+.markdown-body h1, .markdown-body h2, .markdown-body h3 { margin-top: 1.8em; font-family: "STKaiti", "KaiTi", serif; line-height: 1.3; }
+.markdown-body h1 { font-size: 2em; }
+.markdown-body h2 { border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); padding-bottom: .25em; font-size: 1.55em; }
+.markdown-body a { color: #a26a25; text-decoration: underline; text-underline-offset: 3px; }
+.markdown-body img { max-width: 100%; height: auto; }
+.markdown-body blockquote { margin-inline: 0; border-left: 3px solid var(--amber); padding-left: 1.2em; opacity: .78; }
+.markdown-body pre { overflow-x: auto; border-radius: 7px; padding: 16px; background: #182231; color: #e3e8ee; font-size: .82em; }
+.markdown-body code { font-family: ui-monospace, Consolas, monospace; }
+.markdown-body table { display: block; overflow-x: auto; border-collapse: collapse; }
+.markdown-body th, .markdown-body td { border: 1px solid color-mix(in srgb, currentColor 20%, transparent); padding: 8px 12px; }
+
+@media (max-width: 767px) {
+  .reader-header { height: 56px; padding: 0 7px; }
+  .reader-header b { font-size: 15px; }
+  .pdf-reader, .epub-reader, .prose-reader { height: calc(100vh - 56px); height: calc(100dvh - 56px); }
+  .reader-subbar { min-height: 48px; overflow-x: auto; padding: 6px 8px; }
+  .reader-subbar > button { min-height: 38px; }
+  .reader-search { min-width: 220px; }
+  .tool-divider { display: none; }
+  .pdf-tools > span:not(.tool-divider), .pdf-tools > button:nth-of-type(4), .pdf-tools > button:nth-of-type(5) { display: none; }
+  .pdf-stage { height: calc(100% - 48px); padding: 12px; }
+  .epub-workspace, .prose-scroll { height: calc(100% - 48px); }
+  .prose-scroll article { width: calc(100% - 34px); padding-top: 38px; }
+  .document-toc { display: none; }
+  .markdown-layout { display: block; }
+  .markdown-main { height: 100%; }
+}

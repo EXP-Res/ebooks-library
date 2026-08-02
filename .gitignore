@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.pnpm-store/
+*.tsbuildinfo
+/vite.config.js
+/vite.config.d.ts
+/public/generated-covers/
+.env.local
+*.log

@@ -1,0 +1,38 @@
+{
+  "name": "ebooks-library",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@11.18.0",
+  "type": "module",
+  "scripts": {
+    "generate:catalog": "node scripts/generate-catalog.mjs",
+    "generate:covers": "node scripts/generate-covers.mjs",
+    "predev": "node scripts/generate-catalog.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/generate-covers.mjs --pages && node scripts/generate-catalog.mjs --pages",
+    "build": "tsc -b && vite build && node scripts/copy-books.mjs",
+    "preview": "vite preview",
+    "test": "node --test scripts/catalog-core.test.mjs scripts/pages-exclude.test.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "epubjs": "latest",
+    "fuse.js": "latest",
+    "markdown-it": "latest",
+    "pdfjs-dist": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "latest",
+    "@types/markdown-it": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@xmldom/xmldom": "latest",
+    "jszip": "latest",
+    "typescript": "latest"
+  }
+}
