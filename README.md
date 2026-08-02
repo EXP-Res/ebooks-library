@@ -127,6 +127,8 @@ ACCESS_SESSION_HOURS=168
 
 构建配置只把密码的 SHA-256 摘要注入前端。也可以省略明文，直接设置 `ACCESS_PASSWORD_HASH`。GitHub Actions 部署时，在仓库 `Settings → Secrets and variables → Actions` 中添加同名 Secret；有效期可通过变量 `ACCESS_SESSION_HOURS` 设置。
 
+当前工作流的构建任务绑定 `GithubPage` 环境，因此环境 Secret 应创建在 `GithubPage` 下。若改用 Repository secret，也可直接使用同名 `ACCESS_PASSWORD`，但不要同时在两个作用域维护不同密码。Secret 只在重新运行部署后生效。
+
 不配置密码或摘要时，访问页自动停用。
 
 > 该密码功能仅用于简单访问限制，无法阻止懂技术的用户获取静态资源地址，也无法真正保护仓库中的电子书。GitHub Pages 发布的网站可被公网访问，即使源仓库是私有仓库也不应把它当作安全存储。

@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    environment: GithubPage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
