@@ -8,11 +8,12 @@
 .reader-menu a, .reader-menu button { display: flex; min-height: 40px; align-items: center; gap: 9px; border: 0; border-radius: 6px; padding: 7px 10px; background: transparent; color: var(--ink); font-size: 13px; cursor: pointer; }
 .reader-menu a:hover, .reader-menu button:hover { background: var(--paper); }
 .reader-menu svg { width: 17px; }
-.reader-subbar { display: flex; min-height: 50px; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); padding: 6px 16px; background: var(--surface); }
+.reader-subbar { position: relative; z-index: 45; display: flex; min-height: 50px; align-items: center; gap: 8px; border-top: 1px solid var(--line); padding: 6px 16px calc(6px + env(safe-area-inset-bottom)); background: var(--surface); }
 .reader-subbar > button { min-height: 34px; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 6px; padding: 5px 11px; background: var(--surface); cursor: pointer; }
 .reader-subbar > button:hover { border-color: var(--amber); }
 .reader-subbar > button:disabled { opacity: .4; }
 .tool-divider { width: 1px; height: 22px; margin: 0 3px; background: var(--line); }
+.reader-page-status { min-width: 72px; color: var(--muted); font: 11px ui-monospace, monospace; text-align: center; white-space: nowrap; }
 .reader-search { display: flex; min-width: 220px; height: 35px; align-items: center; gap: 5px; margin-left: auto; border: 1px solid var(--line); border-radius: 7px; padding-left: 9px; background: var(--paper); }
 .reader-search svg { width: 16px; color: var(--muted); }
 .reader-search input { width: 125px; min-width: 50px; flex: 1; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 12px; }
@@ -23,15 +24,15 @@
 .reader-failure > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .searching-overlay { position: absolute; z-index: 50; top: 70px; left: 50%; transform: translateX(-50%); border-radius: 20px; padding: 9px 16px; background: var(--navy); color: #fff; box-shadow: var(--shadow); font-size: 12px; }
 
-.pdf-reader, .epub-reader, .prose-reader { height: calc(100vh - 62px); }
+.pdf-reader, .epub-reader, .prose-reader { display: flex; height: calc(100vh - 62px); flex-direction: column; }
 .pdf-tools label { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
 .pdf-tools label input { width: 50px; height: 32px; border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; background: var(--paper); color: var(--ink); text-align: center; }
 .pdf-tools > span:not(.tool-divider) { min-width: 42px; color: var(--muted); font-size: 11px; text-align: center; }
-.pdf-stage { position: relative; height: calc(100% - 50px); overflow: auto; padding: 22px; background: #cbd0d4; text-align: center; }
+.pdf-stage { position: relative; min-height: 0; flex: 1; overflow: auto; padding: 22px; background: #cbd0d4; text-align: center; }
 :root[data-theme='dark'] .pdf-stage { background: #080d15; }
 .pdf-stage canvas { display: block; margin: 0 auto; background: white; box-shadow: 0 8px 30px rgba(0,0,0,.22); }
 
-.epub-workspace { position: relative; height: calc(100% - 50px); }
+.epub-workspace { position: relative; min-height: 0; flex: 1; }
 .epub-viewport { position: absolute; inset: 0; }
 .epub-viewport.theme-paper { background: #f7f4ee; }
 .epub-viewport.theme-eye { background: #e8eddc; }
@@ -43,11 +44,10 @@
 .epub-toc button:hover { background: var(--paper); color: var(--ink); }
 .epub-scrim { position: absolute; z-index: 41; inset: 0; border: 0; background: rgba(8,14,24,.42); }
 
-.prose-reader { display: flex; flex-direction: column; }
 .prose-reader.theme-paper { background: #f7f4ee; color: #253144; }
 .prose-reader.theme-eye { background: #e8eddc; color: #26332b; }
 .prose-reader.theme-night { background: #121b2a; color: #d9e0e8; }
-.prose-scroll { height: calc(100% - 50px); overflow-y: auto; scroll-behavior: smooth; }
+.prose-scroll { min-height: 0; flex: 1; overflow-y: auto; scroll-behavior: smooth; }
 .prose-scroll article { width: calc(100% - 48px); margin: 0 auto; padding: 58px 0 20vh; }
 .prose-scroll article.serif { font-family: "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif; }
 .prose-scroll article.sans { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
@@ -55,7 +55,7 @@
 mark[data-reader-search] { border-radius: 2px; padding: 0 1px; background: #f5d36e; color: #1b2430; }
 mark[data-reader-search].current { outline: 2px solid #d26a32; }
 .markdown-layout { position: relative; flex-direction: row; }
-.markdown-main { min-width: 0; flex: 1; }
+.markdown-main { display: flex; min-width: 0; flex: 1; flex-direction: column; }
 .document-toc { width: 240px; overflow-y: auto; border-right: 1px solid color-mix(in srgb, currentColor 14%, transparent); padding: 24px 12px; }
 .document-toc b { display: block; padding: 0 8px 13px; font: 19px "STKaiti", "KaiTi", serif; }
 .document-toc button { display: block; width: 100%; overflow: hidden; border: 0; border-radius: 5px; padding-block: 7px; background: transparent; color: inherit; opacity: .65; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
@@ -81,8 +81,7 @@ mark[data-reader-search].current { outline: 2px solid #d26a32; }
   .reader-search { min-width: 220px; }
   .tool-divider { display: none; }
   .pdf-tools > span:not(.tool-divider), .pdf-tools > button:nth-of-type(4), .pdf-tools > button:nth-of-type(5) { display: none; }
-  .pdf-stage { height: calc(100% - 48px); padding: 12px; }
-  .epub-workspace, .prose-scroll { height: calc(100% - 48px); }
+  .pdf-stage { padding: 12px; }
   .prose-scroll article { width: calc(100% - 34px); padding-top: 38px; }
   .document-toc { display: none; }
   .markdown-layout { display: block; }

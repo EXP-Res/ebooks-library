@@ -84,16 +84,16 @@ export function PdfReader({ book }: { book: Book }) {
 
   if (loadError) throw new Error(loadError);
   return <div className="pdf-reader" ref={stageRef}>
+    <div className="pdf-stage">{!document && <div className="reader-loading">正在装订 PDF…</div>}<canvas ref={canvasRef} />{searching && <div className="searching-overlay">正在搜索全书…</div>}</div>
     <div className="reader-subbar pdf-tools">
       <button onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page <= 1}>上一页</button>
-      <label><input aria-label="当前页" type="number" min="1" max={document?.numPages || 1} value={page} onChange={(event) => setPage(Math.min(document?.numPages || 1, Math.max(1, Number(event.target.value))))} /> / {document?.numPages || '—'}</label>
       <button onClick={() => setPage((value) => Math.min(document?.numPages || value, value + 1))} disabled={!document || page >= document.numPages}>下一页</button>
+      <label className="reader-page-status"><input aria-label="当前页" type="number" min="1" max={document?.numPages || 1} value={page} onChange={(event) => setPage(Math.min(document?.numPages || 1, Math.max(1, Number(event.target.value))))} /> / {document?.numPages || '—'}</label>
       <span className="tool-divider" />
       <button onClick={() => setScale((value) => Math.max(.25, value - .15))}>−</button><span>{Math.round(scale * 100)}%</span><button onClick={() => setScale((value) => Math.min(4, value + .15))}>＋</button>
       <button onClick={fitWidth}>适应宽度</button>
       <button className="icon-button" onClick={() => stageRef.current?.requestFullscreen()} aria-label="全屏"><Icon name="fullscreen" /></button>
       <ReaderSearch query={query} setQuery={setQuery} count={results.length} current={currentResult} onPrevious={() => moveResult(-1)} onNext={() => moveResult(1)} onSubmit={search} />
     </div>
-    <div className="pdf-stage">{!document && <div className="reader-loading">正在装订 PDF…</div>}<canvas ref={canvasRef} />{searching && <div className="searching-overlay">正在搜索全书…</div>}</div>
   </div>;
 }

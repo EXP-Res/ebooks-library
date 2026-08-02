@@ -17,7 +17,7 @@ declare module 'epubjs' {
     renderTo(element: Element, options: Record<string, unknown>): Rendition;
     ready: Promise<void>;
     navigation: { toc: NavItem[] };
-    locations: { generate(chars?: number): Promise<string[]>; percentageFromCfi(cfi: string): number };
+    locations: { generate(chars?: number): Promise<string[]>; length(): number; percentageFromCfi(cfi: string): number };
     destroy(): void;
   }
   export default function ePub(input: string | ArrayBuffer): Book;

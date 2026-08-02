@@ -52,10 +52,11 @@ export function MarkdownReader({ book }: { book: Book }) {
   if (error) throw new Error(error);
   return <div className={`prose-reader theme-${settings.readingTheme} markdown-layout`}>
     {headings.length > 0 && <aside className="document-toc"><b>本书目录</b>{headings.map((heading) => <button style={{ paddingLeft: `${(heading.level - 1) * 10 + 8}px` }} key={heading.id} onClick={() => document.getElementById(heading.id)?.scrollIntoView({ behavior: 'smooth' })}>{heading.text}</button>)}</aside>}
-    <div className="markdown-main"><div className="reader-subbar"><ReaderSearch query={query} setQuery={setQuery} count={search.count} current={search.current} onPrevious={search.previous} onNext={search.next} /></div>
+    <div className="markdown-main">
       <div className="prose-scroll" ref={scrollRef} onScroll={() => { const element = scrollRef.current; if (!element) return; const range = element.scrollHeight - element.clientHeight; saveProgress(book, { scrollTop: element.scrollTop, progress: range > 0 ? element.scrollTop / range * 100 : 100 }); }}>
         {!source ? <div className="reader-loading">正在排版文稿…</div> : <article ref={contentRef} className={`markdown-body ${settings.fontFamily}`} style={{ fontSize: settings.fontSize, lineHeight: settings.lineHeight, maxWidth: settings.contentWidth }} dangerouslySetInnerHTML={{ __html: html }} />}
       </div>
+      <div className="reader-subbar"><ReaderSearch query={query} setQuery={setQuery} count={search.count} current={search.current} onPrevious={search.previous} onNext={search.next} /></div>
     </div>
   </div>;
 }

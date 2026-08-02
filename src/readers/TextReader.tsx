@@ -40,9 +40,9 @@ export function TextReader({ book }: { book: Book }) {
 
   if (error) throw new Error(error);
   return <div className={`prose-reader theme-${settings.readingTheme}`}>
-    <div className="reader-subbar"><ReaderSearch query={query} setQuery={setQuery} count={search.count} current={search.current} onPrevious={search.previous} onNext={search.next} /></div>
     <div className="prose-scroll" ref={scrollRef} onScroll={onScroll}>
       {!content ? <div className="reader-loading">正在展开文本…</div> : <article ref={contentRef} className={settings.fontFamily} style={{ fontSize: settings.fontSize, lineHeight: settings.lineHeight, maxWidth: settings.contentWidth }}><div className="plain-text">{content}</div></article>}
     </div>
+    <div className="reader-subbar"><ReaderSearch query={query} setQuery={setQuery} count={search.count} current={search.current} onPrevious={search.previous} onNext={search.next} /></div>
   </div>;
 }

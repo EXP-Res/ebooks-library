@@ -6,7 +6,7 @@ import { getSettings } from '../services/settings';
 import type { Book } from '../types';
 import { originalFileUrl } from '../utils/assetUrl';
 
-interface EpubLocation { start?: { cfi?: string; href?: string }; end?: { cfi?: string }; }
+interface EpubLocation { start?: { cfi?: string; href?: string; location?: number }; end?: { cfi?: string }; }
 interface SearchResult { cfi: string; excerpt: string }
 interface SearchableSection { load(loader: (path: string) => Promise<unknown>): Promise<void>; find(query: string): SearchResult[]; unload(): void }
 interface SearchableBook extends EpubBook { spine: { spineItems: SearchableSection[] }; load(path: string): Promise<unknown> }
@@ -26,6 +26,7 @@ export function EpubReader({ book }: { book: Book }) {
   const [current, setCurrent] = useState(0);
   const [searching, setSearching] = useState(false);
   const [loadError, setLoadError] = useState('');
+  const [pageInfo, setPageInfo] = useState({ current: 0, total: 0 });
   const settings = getSettings();
 
   useEffect(() => {
@@ -44,12 +45,15 @@ export function EpubReader({ book }: { book: Book }) {
     epubBook.ready.then(async () => {
       setChapters(flatten(epubBook.navigation.toc));
       await epubBook.locations.generate(1400);
+      setPageInfo((value) => ({ ...value, total: epubBook.locations.length() }));
       await rendition.display(saved?.location);
     }).catch((reason: unknown) => { if (active) setLoadError(reason instanceof Error ? reason.message : 'EPUB 加载失败'); });
     rendition.on('relocated', (rawLocation) => {
       const location = rawLocation as EpubLocation;
       const cfi = location.start?.cfi;
       if (!cfi) return;
+      const currentPage = location.start?.location;
+      setPageInfo({ current: typeof currentPage === 'number' ? currentPage + 1 : 0, total: epubBook.locations.length() });
       const chapter = flatten(epubBook.navigation.toc).find((item) => location.start?.href?.includes(item.href.split('#')[0]))?.label;
       saveProgress(book, { location: cfi, chapter, progress: epubBook.locations.percentageFromCfi(cfi) * 100 });
     });
@@ -81,20 +85,21 @@ export function EpubReader({ book }: { book: Book }) {
 
   if (loadError) throw new Error(loadError);
   return <div className="epub-reader">
-    <div className="reader-subbar epub-tools">
-      <button onClick={() => setTocOpen((value) => !value)}>章节目录</button>
-      <button onClick={() => renditionRef.current?.prev()}>上一章</button>
-      <button onClick={() => renditionRef.current?.next()}>下一章</button>
-      <span className="tool-divider" />
-      <button onClick={() => renditionRef.current?.themes.fontSize(`${Math.max(12, settings.fontSize - 2)}px`)}>字小</button>
-      <button onClick={() => renditionRef.current?.themes.fontSize(`${settings.fontSize + 2}px`)}>字大</button>
-      <ReaderSearch query={query} setQuery={setQuery} count={results.length} current={current} onPrevious={() => move(-1)} onNext={() => move(1)} onSubmit={search} />
-    </div>
     <div className="epub-workspace">
       <aside className={`epub-toc ${tocOpen ? 'open' : ''}`}><b>章节目录</b>{chapters.map((chapter, index) => <button key={`${chapter.href}-${index}`} style={{ paddingLeft: `${12 + chapter.depth * 14}px` }} onClick={() => { renditionRef.current?.display(chapter.href); setTocOpen(false); }}>{chapter.label}</button>)}</aside>
       {tocOpen && <button className="epub-scrim" onClick={() => setTocOpen(false)} aria-label="关闭目录" />}
       <div className={`epub-viewport theme-${settings.readingTheme}`} ref={viewportRef} onClick={(event) => { const x = event.clientX / window.innerWidth; if (x < .2) renditionRef.current?.prev(); else if (x > .8) renditionRef.current?.next(); }} />
       {searching && <div className="searching-overlay">正在搜索全书…</div>}
+    </div>
+    <div className="reader-subbar epub-tools">
+      <button onClick={() => setTocOpen((value) => !value)}>章节目录</button>
+      <button onClick={() => renditionRef.current?.prev()}>上一页</button>
+      <button onClick={() => renditionRef.current?.next()}>下一页</button>
+      <output className="reader-page-status" aria-live="polite">{pageInfo.current || '—'} / {pageInfo.total || '—'}</output>
+      <span className="tool-divider" />
+      <button onClick={() => renditionRef.current?.themes.fontSize(`${Math.max(12, settings.fontSize - 2)}px`)}>字小</button>
+      <button onClick={() => renditionRef.current?.themes.fontSize(`${settings.fontSize + 2}px`)}>字大</button>
+      <ReaderSearch query={query} setQuery={setQuery} count={results.length} current={current} onPrevious={() => move(-1)} onNext={() => move(1)} onSubmit={search} />
     </div>
   </div>;
 }
